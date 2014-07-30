@@ -15,6 +15,9 @@ import java.lang.reflect.Modifier;
 import java.sql.Timestamp;
 import java.util.*;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import static com.orm.SugarApp.getSugarContext;
 
 public class SugarRecord<T>{
@@ -316,6 +319,24 @@ public class SugarRecord<T>{
                     Calendar c = Calendar.getInstance();
                     c.setTimeInMillis(l);
                     field.set(this, c);
+                } else if (fieldType.equals(JSONObject.class)) {
+                	String val = cursor.getString(columnIndex);
+                	try {
+                		JSONObject j = new JSONObject( val );
+                		field.set( this, j );
+                	}
+                	catch (Exception e) {
+                        Log.e("Sugar", "JSONObject cannot be read from Sqlite3 database. Please check the type of field " + field.getName());
+                    }
+                } else if (fieldType.equals(JSONArray.class)) {
+                	String val = cursor.getString(columnIndex);
+                	try {
+                		JSONArray j = new JSONArray( val );
+                		field.set( this, j );
+                	}
+                	catch (Exception e) {
+                        Log.e("Sugar", "JSONObject cannot be read from Sqlite3 database. Please check the type of field " + field.getName());
+                    }
                 } else if (Enum.class.isAssignableFrom(fieldType)) {
                     try {
                         Method valueOf = field.getType().getMethod("valueOf", String.class);
