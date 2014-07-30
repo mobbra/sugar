@@ -48,7 +48,6 @@ public class SugarRecord<T>{
         return save(getSugarContext().getDatabase().getDB());
     }
 
-    @SuppressWarnings("deprecation")
     public static <T extends SugarRecord<?>> void saveInTx(T... objects ) {
         saveInTx(Arrays.asList(objects));
     }
@@ -86,7 +85,7 @@ public class SugarRecord<T>{
                 if (SugarRecord.class.isAssignableFrom(columnType)) {
                     values.put(columnName,
                             (columnValue != null)
-                                    ? String.valueOf(((SugarRecord) columnValue).id)
+                                    ? String.valueOf(((SugarRecord<?>) columnValue).id)
                                     : "0");
                 } else {
                     if (columnType.equals(Short.class) || columnType.equals(short.class)) {
@@ -272,7 +271,7 @@ public class SugarRecord<T>{
         for (Field field : columns) {
             field.setAccessible(true);
             try {
-                Class fieldType = field.getType();
+                Class<?> fieldType = field.getType();
                 String colName = StringUtil.toSQLName(field);
 
                 int columnIndex = cursor.getColumnIndex(colName);
