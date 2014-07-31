@@ -1,15 +1,14 @@
 package com.orm;
 
-import android.content.Context;
-
-public class SugarApp {
+public class SugarApp extends android.app.Application{
 
     private Database database;
     private static SugarApp sugarContext;
-    
-    public SugarApp(Context context){
+
+    public void onCreate(){
+        super.onCreate();
         SugarApp.sugarContext = this;
-        this.database = new Database(context);
+        this.database = new Database(this);
     }
 
     /*
@@ -22,6 +21,7 @@ public class SugarApp {
         if (this.database != null) {
             this.database.getDB().close();
         }
+        super.onTerminate();
     }
 
     public static SugarApp getSugarContext(){
